@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "mcpwm_prelude.h": "c",
+        "mcpwm_gen.h": "c"
+    }
+}
