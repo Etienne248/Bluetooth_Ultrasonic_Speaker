@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "mcpwm_prelude.h": "c",
-        "mcpwm_gen.h": "c"
+        "mcpwm_gen.h": "c",
+        "esp_pm.h": "c"
     }
 }
