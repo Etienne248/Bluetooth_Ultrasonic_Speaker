@@ -13,16 +13,17 @@
 #include "esp_timer.h"
 
 static const char *TAG = "example";
+const int division = 100;
 
 volatile int x = 0;
-volatile int angle = 1010;
+volatile int angle = 1010*division;
 volatile int step = 1;
 
 // Please consult the datasheet of your servo before changing the following parameters
 #define SERVO_MIN_PULSEWIDTH_US 0    // Minimum pulse width in microsecond
 #define SERVO_MAX_PULSEWIDTH_US 2000 // Maximum pulse width in microsecond
 #define SERVO_MIN_DEGREE 0           // Minimum angle
-#define SERVO_MAX_DEGREE 2000        // Maximum angle
+#define SERVO_MAX_DEGREE 2000*division        // Maximum angle
 
 #define SERVO_PULSE_GPIO 18                   // GPIO connects to the PWM signal line
 #define SERVO_TIMEBASE_RESOLUTION_HZ 80000000 // 1MHz, 1us per tick
@@ -37,7 +38,7 @@ bool test_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_data_t *e
 {
     x++;
     ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
-    if ((angle + step) > 2000 || (angle + step) < 1000)
+    if ((angle + step) > 2000*division || (angle + step) < 1000*division)
     {
         step *= -1;
     }
@@ -45,9 +46,8 @@ bool test_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_data_t *e
     return true;
 }
 
-void app_main(void)
-{
-     esp_pm_configure(ESP_PM_CPU_FREQ_MAX);
+void mcpwm_init(){
+    esp_pm_configure(ESP_PM_CPU_FREQ_MAX);
 
     ESP_LOGI(TAG, "Create timer and operator");
     mcpwm_timer_handle_t timer = NULL;
@@ -119,14 +119,19 @@ void app_main(void)
     ESP_LOGI(TAG, "Enable and start timer");
     ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
     ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer, MCPWM_TIMER_START_NO_STOP));
+};
 
+
+void app_main(void)
+{
+    mcpwm_init();
     while (1)
     {
         ESP_LOGI(TAG, "Angle of rotation: %d", angle);
         // Add delay, since it takes time for servo to rotate, usually 200ms/60degree rotation under 5V power supply
         // vTaskDelay(pdMS_TO_TICKS(1));
-        ESP_LOGI(TAG, "X=: %d", x);
-        ESP_LOGI(TAG, "X=: %d", x);
+        //ESP_LOGI(TAG, "X=: %d", x);
+        printf("x = %d\n",x);
         x=0;
         //printf(esp_clk_cpu_freq());
         vTaskDelay(100);
