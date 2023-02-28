@@ -13,7 +13,7 @@ static inline uint32_t example_angle_to_compare(int angle)
     return (angle - SERVO_MIN_DEGREE) * (SERVO_MAX_PULSEWIDTH_US - SERVO_MIN_PULSEWIDTH_US) / (SERVO_MAX_DEGREE - SERVO_MIN_DEGREE) + SERVO_MIN_PULSEWIDTH_US;
 }
 
-bool test_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_data_t *edata, void *comparator)
+bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_data_t *edata, void *comparator)
 {
     x++;
     ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
@@ -91,7 +91,7 @@ void mcpwm_init(){
 
     ESP_LOGI(TAG, "register event callbacks\r\n");
     mcpwm_timer_event_callbacks_t cbs = {
-        .on_empty = test_on_empty,
+        .on_empty = change_duty_on_empty,
     };
     ESP_ERROR_CHECK(mcpwm_timer_register_event_callbacks(timer, &cbs, comparator));
 

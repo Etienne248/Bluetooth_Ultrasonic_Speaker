@@ -43,8 +43,35 @@ volatile int step = 1;
 
 // Functions
 
+
+/**
+ * @brief 
+ * @param angle 
+ * @return 
+ */
 static inline uint32_t example_angle_to_compare(int angle);
-bool test_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_data_t *edata, void *comparator);
+
+/**
+ * @brief callback function that is execute on timer empty 
+ * @param timer 
+ * @param edata 
+ * @param comparator 
+ * @return 
+ * @note the folowing code attach the callback:
+ * @note \code{.c}
+ *   mcpwm_timer_event_callbacks_t cbs = {
+ *       .on_empty = change_duty_on_empty,
+ *   };
+ *   ESP_ERROR_CHECK(mcpwm_timer_register_event_callbacks(timer, &cbs, comparator));
+ * \endcode
+ */
+bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_data_t *edata, void *comparator);
+
+/** 
+ * @brief start the pwm
+ * @param[in] dsdfs sfdfds
+ */
+void mcpwm_init();
 
 // End of header file
 #endif
