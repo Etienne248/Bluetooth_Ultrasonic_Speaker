@@ -1,6 +1,6 @@
 #include "mcpwm_gen.h"
 #include "bt_main.h"
-
+#include "glob_var.h"
 
 
 void app_main(void)

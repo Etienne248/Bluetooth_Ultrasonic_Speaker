@@ -2,6 +2,13 @@
     "files.associations": {
         "mcpwm_prelude.h": "c",
         "mcpwm_gen.h": "c",
-        "esp_pm.h": "c"
+        "esp_pm.h": "c",
+        "array": "c",
+        "bitset": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "regex": "c",
+        "utility": "c",
+        "glob_var.h": "c"
     }
 }

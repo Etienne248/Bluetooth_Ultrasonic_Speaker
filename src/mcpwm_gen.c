@@ -5,6 +5,9 @@
  */
 
 #include "mcpwm_gen.h"
+#include "glob_var.h"
+
+RingbufHandle_t ringbuf_pwm = NULL;
 
 volatile int x = 0;
 volatile int angle = 1010*DIVISION;
@@ -19,12 +22,22 @@ inline uint32_t example_angle_to_compare(int angle)
 bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_data_t *edata, void *comparator)
 {
     x++;
+    /*
     ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
     if ((angle + step) > 2000*DIVISION || (angle + step) < 1000*DIVISION)
     {
         step *= -1;
     }
-    angle += step;
+    angle += step;*/
+    size_t item_size;
+    u_int8_t item = xRingbufferReceiveUpTo(ringbuf_pwm, &item_size, pdMS_TO_TICKS(1000), sizeof(uint32_t));
+    if (item != NULL && item_size == 4){
+        
+    }
+
+
+
+    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
     return true;
 }
 
@@ -101,4 +114,8 @@ void mcpwm_init(){
     ESP_LOGI(TAG, "Enable and start timer");
     ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
     ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer, MCPWM_TIMER_START_NO_STOP));
+    
+    if ((ringbuf_pwm = xRingbufferCreate(8 * 1024, RINGBUF_TYPE_BYTEBUF)) == NULL) {
+        return;
+    }
 };

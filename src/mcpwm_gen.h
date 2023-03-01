@@ -19,7 +19,7 @@
 #include "esp_timer.h"
 
 // #defines
-#define DIVISION 100
+#define DIVISION 1
 
 // Please consult the datasheet of your servo before changing the following parameters
 #define SERVO_MIN_PULSEWIDTH_US 0    // Minimum pulse width in microsecond
