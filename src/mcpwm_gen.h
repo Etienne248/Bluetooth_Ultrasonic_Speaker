@@ -39,7 +39,7 @@ static const char *TAG = "example";
 extern volatile int x;
 extern volatile int angle;
 extern volatile int step;
-
+extern UBaseType_t *uxItemsWaiting;
 
 // Functions
 

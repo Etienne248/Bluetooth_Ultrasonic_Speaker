@@ -13,6 +13,10 @@ volatile int x = 0;
 volatile int angle = 1010*DIVISION;
 volatile int step = 1;
 
+UBaseType_t *uxItemsWaiting=NULL;
+
+static uint8_t count_for_data_skip = 0;
+
 
 inline uint32_t example_angle_to_compare(int angle)
 {
@@ -30,14 +34,21 @@ bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_da
     }
     angle += step;*/
     size_t item_size;
-    u_int8_t item = xRingbufferReceiveUpTo(ringbuf_pwm, &item_size, pdMS_TO_TICKS(1000), sizeof(uint32_t));
+    uint32_t * item = xRingbufferReceiveUpTo(ringbuf_pwm, &item_size, pdMS_TO_TICKS(1000), sizeof(uint32_t));
     if (item != NULL && item_size == 4){
-        
+        angle = *item;
+        if (*uxItemsWaiting > 4*1024 && count_for_data_skip >9){
+            vRingbufferReturnItem(ringbuf_pwm, (void *)item);
+            item = xRingbufferReceiveUpTo(ringbuf_pwm, &item_size, pdMS_TO_TICKS(1000), sizeof(uint32_t));
+            angle = angle*(*item)/2;
+        }
+        vRingbufferReturnItem(ringbuf_pwm, (void *)item);
+        ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
     }
 
+    count_for_data_skip++;
 
 
-    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
     return true;
 }
 
@@ -111,11 +122,14 @@ void mcpwm_init(){
     };
     ESP_ERROR_CHECK(mcpwm_timer_register_event_callbacks(timer, &cbs, comparator));
 
+    ESP_LOGI(TAG, "ring buffer creation\r\n");
+    if ((ringbuf_pwm = xRingbufferCreate(8 * 1024, RINGBUF_TYPE_BYTEBUF)) == NULL) {
+        return;
+    }
+    vRingbufferGetInfo(NULL, NULL, NULL, NULL, NULL, uxItemsWaiting);
+
     ESP_LOGI(TAG, "Enable and start timer");
     ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
     ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer, MCPWM_TIMER_START_NO_STOP));
     
-    if ((ringbuf_pwm = xRingbufferCreate(8 * 1024, RINGBUF_TYPE_BYTEBUF)) == NULL) {
-        return;
-    }
 };
