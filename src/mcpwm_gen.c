@@ -6,9 +6,12 @@
 
 #include "mcpwm_gen.h"
 
+volatile int x = 0;
+volatile int angle = 1010*DIVISION;
+volatile int step = 1;
 
 
-static inline uint32_t example_angle_to_compare(int angle)
+inline uint32_t example_angle_to_compare(int angle)
 {
     return (angle - SERVO_MIN_DEGREE) * (SERVO_MAX_PULSEWIDTH_US - SERVO_MIN_PULSEWIDTH_US) / (SERVO_MAX_DEGREE - SERVO_MIN_DEGREE) + SERVO_MIN_PULSEWIDTH_US;
 }

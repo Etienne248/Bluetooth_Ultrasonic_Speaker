@@ -36,9 +36,9 @@
 
 static const char *TAG = "example";
 
-volatile int x = 0;
-volatile int angle = 1010*DIVISION;
-volatile int step = 1;
+extern volatile int x;
+extern volatile int angle;
+extern volatile int step;
 
 
 // Functions
