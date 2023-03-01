@@ -49,7 +49,7 @@ extern volatile int step;
  * @param angle 
  * @return 
  */
-static inline uint32_t example_angle_to_compare(int angle);
+//inline uint32_t example_angle_to_compare(int angle);
 
 /**
  * @brief callback function that is execute on timer empty 

@@ -1,10 +1,12 @@
 #include "mcpwm_gen.h"
+#include "bt_main.h"
 
 
 
 void app_main(void)
 {
     mcpwm_init();
+    bt_app_main();
     while (1)
     {
         ESP_LOGI(TAG, "Angle of rotation: %d", angle);
