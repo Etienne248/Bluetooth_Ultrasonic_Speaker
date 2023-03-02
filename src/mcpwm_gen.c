@@ -34,17 +34,22 @@ bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_da
     }
     angle += step;*/
     size_t item_size;
-    uint32_t * item = xRingbufferReceiveUpTo(ringbuf_pwm, &item_size, pdMS_TO_TICKS(1000), sizeof(uint32_t));
+    static uint16_t * item = NULL;
+    if (item==NULL)item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
     if (item != NULL && item_size == 4){
-        angle = *item;
-        if (*uxItemsWaiting > 4*1024 && count_for_data_skip >9){
+        angle = item[0]+item[1];
+        if (/**uxItemsWaiting > 1024 &&*/ count_for_data_skip >9){
             vRingbufferReturnItem(ringbuf_pwm, (void *)item);
-            item = xRingbufferReceiveUpTo(ringbuf_pwm, &item_size, pdMS_TO_TICKS(1000), sizeof(uint32_t));
-            angle = angle*(*item)/2;
+            item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
+            angle = angle*(item[0]+item[1])/2;
+            count_for_data_skip=0;
         }
         vRingbufferReturnItem(ringbuf_pwm, (void *)item);
-        ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
+        item = NULL;
+        //ESP_LOGI(TAG, "bluetooth Angle of rotation: %d", angle);
     }
+    else angle = 1500;
+    //ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
 
     count_for_data_skip++;
 
@@ -97,7 +102,7 @@ void mcpwm_init(){
     ESP_ERROR_CHECK(mcpwm_new_generator(oper, &generatorB_config, &generatorB));
 
     // set the initial compare value, so that the servo will spin to the center position
-    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(0)));
+    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(1050)));
 
     ESP_LOGI(TAG, "Set generator action on timer and compare event");
     // go high on counter empty
@@ -126,7 +131,7 @@ void mcpwm_init(){
     if ((ringbuf_pwm = xRingbufferCreate(8 * 1024, RINGBUF_TYPE_BYTEBUF)) == NULL) {
         return;
     }
-    vRingbufferGetInfo(NULL, NULL, NULL, NULL, NULL, uxItemsWaiting);
+    vRingbufferGetInfo(ringbuf_pwm, NULL, NULL, NULL, NULL, uxItemsWaiting);
 
     ESP_LOGI(TAG, "Enable and start timer");
     ESP_ERROR_CHECK(mcpwm_timer_enable(timer));

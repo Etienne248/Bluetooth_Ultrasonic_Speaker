@@ -108,7 +108,7 @@ static void bt_i2s_task_handler(void *arg)
         /* receive data from ringbuffer and write it to I2S DMA transmit buffer */
         data = (uint8_t *)xRingbufferReceive(s_ringbuf_i2s, &item_size, (TickType_t)portMAX_DELAY);
         if (item_size != 0){
-            xRingbufferSend(ringbuf_pwm, data, item_size, (TickType_t)portMAX_DELAY);
+            xRingbufferSend(ringbuf_pwm, data, item_size, 1);
         #ifdef CONFIG_EXAMPLE_A2DP_SINK_OUTPUT_INTERNAL_DAC
             i2s_write(0, data, item_size, &bytes_written, portMAX_DELAY);
         #else
