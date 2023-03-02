@@ -33,23 +33,27 @@ bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_da
         step *= -1;
     }
     angle += step;*/
-    size_t item_size;
-    static uint16_t * item = NULL;
-    if (item==NULL)item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
-    if (item != NULL && item_size == 4){
-        angle = item[0]+item[1];
-        if (/**uxItemsWaiting > 1024 &&*/ count_for_data_skip >9){
-            vRingbufferReturnItem(ringbuf_pwm, (void *)item);
-            item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
-            angle = angle*(item[0]+item[1])/2;
-            count_for_data_skip=0;
-        }
-        vRingbufferReturnItem(ringbuf_pwm, (void *)item);
-        item = NULL;
-        //ESP_LOGI(TAG, "bluetooth Angle of rotation: %d", angle);
-    }
-    else angle = 1500;
-    //ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
+
+    
+    // size_t item_size;
+    // static uint16_t * item = NULL;
+    // if (item==NULL)item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
+    // if (item != NULL && item_size == 4){
+    //     angle = item[0]+item[1];
+    //     if (/**uxItemsWaiting > 1024 &&*/ count_for_data_skip >9){
+    //         vRingbufferReturnItem(ringbuf_pwm, (void *)item);
+    //         item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
+    //         angle = angle*(item[0]+item[1])/2;
+    //         count_for_data_skip=0;
+    //     }
+    //     vRingbufferReturnItem(ringbuf_pwm, (void *)item);
+    //     item = NULL;
+    //     //ESP_LOGI(TAG, "bluetooth Angle of rotation: %d", angle);
+    // }
+    // else angle = 1500;
+    // //ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
+
+    
 
     count_for_data_skip++;
 
