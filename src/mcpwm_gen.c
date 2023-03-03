@@ -20,8 +20,8 @@ static uint8_t count_for_data_skip = 0;
 
 inline uint32_t example_angle_to_compare(int angle)
 {
-    if (angle>=SERVO_MAX_DEGREE)angle = SERVO_MAX_DEGREE;
-    else if (angle<=SERVO_MIN_DEGREE)angle = SERVO_MIN_DEGREE;
+    if (angle>=SERVO_MAX_DEGREE)angle = SERVO_MAX_DEGREE-1;
+    else if (angle<=SERVO_MIN_DEGREE)angle = SERVO_MIN_DEGREE+1;
     int v = (angle - SERVO_MIN_DEGREE) * (SERVO_MAX_PULSEWIDTH_US - SERVO_MIN_PULSEWIDTH_US) / (SERVO_MAX_DEGREE - SERVO_MIN_DEGREE) + SERVO_MIN_PULSEWIDTH_US;
     return v;
 }
@@ -46,8 +46,8 @@ bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_da
         vRingbufferReturnItem(ringbuf_pwm, (void *)item);
         //ESP_LOGI(TAG, "bluetooth Angle of rotation: %d", angle);
     }
-    else angle = -1000;
-    if (uxItemsWaiting > 1024 && count_for_data_skip >9){
+    else angle = 0;
+    if (uxItemsWaiting > 1024*4 && count_for_data_skip >9){
         item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
         if (item != NULL ){
             angle = angle+(item[0]+item[1])/2;
@@ -108,7 +108,7 @@ void mcpwm_init(){
     ESP_ERROR_CHECK(mcpwm_new_generator(oper, &generatorB_config, &generatorB));
 
     // set the initial compare value, so that the servo will spin to the center position
-    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(1050)));
+    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(0)));
 
     ESP_LOGI(TAG, "Set generator action on timer and compare event");
     // go high on counter empty
