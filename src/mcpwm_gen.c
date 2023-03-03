@@ -13,14 +13,17 @@ volatile int x = 0;
 volatile int angle = 1010*DIVISION;
 volatile int step = 1;
 
-UBaseType_t *uxItemsWaiting=NULL;
+UBaseType_t uxItemsWaiting;
 
 static uint8_t count_for_data_skip = 0;
 
 
 inline uint32_t example_angle_to_compare(int angle)
 {
-    return (angle - SERVO_MIN_DEGREE) * (SERVO_MAX_PULSEWIDTH_US - SERVO_MIN_PULSEWIDTH_US) / (SERVO_MAX_DEGREE - SERVO_MIN_DEGREE) + SERVO_MIN_PULSEWIDTH_US;
+    if (angle>=SERVO_MAX_DEGREE)angle = SERVO_MAX_DEGREE;
+    else if (angle<=SERVO_MIN_DEGREE)angle = SERVO_MIN_DEGREE;
+    int v = (angle - SERVO_MIN_DEGREE) * (SERVO_MAX_PULSEWIDTH_US - SERVO_MIN_PULSEWIDTH_US) / (SERVO_MAX_DEGREE - SERVO_MIN_DEGREE) + SERVO_MIN_PULSEWIDTH_US;
+    return v;
 }
 
 bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_data_t *edata, void *comparator)
@@ -33,23 +36,26 @@ bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_da
         step *= -1;
     }
     angle += step;*/
+
+    //vRingbufferGetInfo(ringbuf_pwm, NULL, NULL, NULL, NULL, uxItemsWaiting);
     size_t item_size;
-    static uint16_t * item = NULL;
-    if (item==NULL)item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
-    if (item != NULL && item_size == 4){
+    static int16_t * item = NULL;
+    item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
+    if (item != NULL ){
         angle = item[0]+item[1];
-        if (/**uxItemsWaiting > 1024 &&*/ count_for_data_skip >9){
-            vRingbufferReturnItem(ringbuf_pwm, (void *)item);
-            item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
-            angle = angle*(item[0]+item[1])/2;
-            count_for_data_skip=0;
-        }
         vRingbufferReturnItem(ringbuf_pwm, (void *)item);
-        item = NULL;
         //ESP_LOGI(TAG, "bluetooth Angle of rotation: %d", angle);
     }
-    else angle = 1500;
-    //ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
+    else angle = -1000;
+    if (uxItemsWaiting > 1024 && count_for_data_skip >9){
+        item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, sizeof(uint32_t));
+        if (item != NULL ){
+            angle = angle+(item[0]+item[1])/2;
+            count_for_data_skip=0;
+            vRingbufferReturnItem(ringbuf_pwm, (void *)item);
+        }
+    }
+    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
 
     count_for_data_skip++;
 
@@ -131,7 +137,7 @@ void mcpwm_init(){
     if ((ringbuf_pwm = xRingbufferCreate(8 * 1024, RINGBUF_TYPE_BYTEBUF)) == NULL) {
         return;
     }
-    vRingbufferGetInfo(ringbuf_pwm, NULL, NULL, NULL, NULL, uxItemsWaiting);
+    vRingbufferGetInfo(ringbuf_pwm, NULL, NULL, NULL, NULL, &uxItemsWaiting);
 
     ESP_LOGI(TAG, "Enable and start timer");
     ESP_ERROR_CHECK(mcpwm_timer_enable(timer));

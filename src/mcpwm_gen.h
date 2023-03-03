@@ -22,10 +22,10 @@
 #define DIVISION 1
 
 // Please consult the datasheet of your servo before changing the following parameters
-#define SERVO_MIN_PULSEWIDTH_US 0    // Minimum pulse width in microsecond
+#define SERVO_MIN_PULSEWIDTH_US 1000    // Minimum pulse width in microsecond
 #define SERVO_MAX_PULSEWIDTH_US 2000 // Maximum pulse width in microsecond
-#define SERVO_MIN_DEGREE 0           // Minimum angle
-#define SERVO_MAX_DEGREE 2000*DIVISION        // Maximum angle
+#define SERVO_MIN_DEGREE -10000          // Minimum angle
+#define SERVO_MAX_DEGREE 10000*DIVISION        // Maximum angle
 
 #define SERVO_PULSE_GPIO 18                   // GPIO connects to the PWM signal line
 #define SERVO_TIMEBASE_RESOLUTION_HZ 80000000 // 1MHz, 1us per tick
@@ -39,7 +39,7 @@ static const char *TAG = "example";
 extern volatile int x;
 extern volatile int angle;
 extern volatile int step;
-extern UBaseType_t *uxItemsWaiting;
+extern UBaseType_t uxItemsWaiting;
 
 // Functions
 
