@@ -53,6 +53,14 @@ bool change_duty_on_empty(mcpwm_timer_handle_t timer, const mcpwm_timer_event_da
     // else angle = 1500;
     // //ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
 
+    size_t item_size;
+    static uint16_t * item = NULL;
+    item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, 4);
+    if (item != NULL){
+        vRingbufferReturnItem(ringbuf_pwm, (void *)item);
+    }
+
+
     
 
     count_for_data_skip++;

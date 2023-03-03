@@ -10,12 +10,13 @@ void app_main(void)
     while (1)
     {
         size_t item_size;
-        static uint8_t * item = NULL;
+        static int16_t * item = NULL;
         item = xRingbufferReceiveUpToFromISR(ringbuf_pwm, &item_size, 40000);
         if (item != NULL){
-            for(int i = 0; i<item_size;i++)printf("item %d = %d \n",i,item[i]);
+            for(int i = 0; i<item_size/2;i++)printf("item %d = %d \n",i,item[i]);
             vRingbufferReturnItem(ringbuf_pwm, (void *)item);
         }
+        
         ESP_LOGI(TAG, "Angle of rotation: %d", angle);
         // Add delay, since it takes time for servo to rotate, usually 200ms/60degree rotation under 5V power supply
         // vTaskDelay(pdMS_TO_TICKS(1));
