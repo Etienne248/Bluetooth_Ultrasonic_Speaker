@@ -52,8 +52,9 @@
       (dielectric_constraints no)
     )
     (pad_to_mask_clearance 0)
+    (aux_axis_origin 137.929047 131.509642)
     (pcbplotparams
-      (layerselection 0x0001000_ffffffff)
+      (layerselection 0x0001080_7fffffff)
       (plot_on_all_layers_selection 0x0000000_00000000)
       (disableapertmacros false)
       (usegerberextensions false)
@@ -66,7 +67,7 @@
       (plotframeref false)
       (viasonmask false)
       (mode 1)
-      (useauxorigin false)
+      (useauxorigin true)
       (hpglpennumber 1)
       (hpglpenspeed 20)
       (hpglpendiameter 15.000000)
@@ -1640,15 +1641,8 @@
     )
   )
 
-  (gr_poly
-    (pts
-      (arc (start 103.234486 132.741342) (mid 104.698952 136.276876) (end 108.234486 137.741342))
-      (arc (start 209.534486 137.741342) (mid 213.07002 136.276876) (end 214.534486 132.741342))
-      (arc (start 214.534486 49.741342) (mid 213.07002 46.205808) (end 209.534486 44.741342))
-      (arc (start 108.234486 44.741342) (mid 104.698952 46.205808) (end 103.234486 49.741342))
-    )
-
-    (stroke (width 0.2) (type solid)) (fill none) (layer "Edge.Cuts") (tstamp 464644c0-be81-42ad-937f-50a8b7d2234c))
+  (gr_rect (start 101.6 43.18) (end 218.44 139.7)
+    (stroke (width 0.1) (type default)) (fill none) (layer "Edge.Cuts") (tstamp c579c1b5-cd83-4833-b221-c09566ec7437))
 
   (segment (start 114.9 95.857359) (end 114.9 94.45) (width 1) (layer "F.Cu") (net 1) (tstamp 02ba0548-0ba1-4929-8565-45e0ab0ffd8c))
   (segment (start 109.209209 71.701534) (end 113.997172 71.701534) (width 1) (layer "F.Cu") (net 1) (tstamp 067d7c55-7727-4772-94b3-72a90cabcca8))
