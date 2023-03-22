@@ -438,11 +438,11 @@
     (uuid f3fad0a1-273d-4fb4-b536-e4b490fa3d2f)
   )
 
-  (label "pwm1" (at 110.49 91.44 180)
+  (label "pwm1" (at 110.49 86.36 180)
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 07233e30-38e5-4c9d-997c-463b86da63e6)
   )
-  (label "pwm2" (at 110.49 86.36 180)
+  (label "pwm2" (at 110.49 91.44 180)
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid bdd867c0-4c70-4988-9f7b-d679a895c734)
   )
@@ -483,7 +483,7 @@
     (property "Value" "ESP32_DevKit_V1_DOIT" (id 1) (at 78.2194 50.8 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "ESP32_DevKit_V1_DOIT:esp32_devkit_v1_doit" (id 2) (at 64.77 52.07 0))
+    (property "Footprint" "esp32_devkit_v1_doit:esp32_devkit_v1_doit" (id 2) (at 64.77 52.07 0))
     (property "Datasheet" "https://aliexpress.com/item/32864722159.html" (id 3) (at 64.77 52.07 0)
       (effects (font (size 1.27 1.27)) hide)
     )
@@ -828,7 +828,7 @@
       (reference "J4") (unit 1) (value "from_boost_converter") (footprint "librarie:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal")
     )
     (path "/15ab0af0-1934-4520-be0c-d334ee577097"
-      (reference "U1") (unit 1) (value "ESP32_DevKit_V1_DOIT") (footprint "ESP32_DevKit_V1_DOIT:esp32_devkit_v1_doit")
+      (reference "U1") (unit 1) (value "ESP32_DevKit_V1_DOIT") (footprint "esp32_devkit_v1_doit:esp32_devkit_v1_doit")
     )
     (path "/dc1b93f2-98cd-47d4-85b1-5e51e238fc97"
       (reference "U2") (unit 1) (value "MIC4427") (footprint "librarie:Fet_driver_SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3mm")
