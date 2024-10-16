@@ -22,10 +22,6 @@ The project aims to create a speaker that can project a beam of sound in a speci
 
 ## Installation and Usage
 
-To use this project, you_box.jpg)
-
-## Installation and Usage
-
 To use this project, you will need an ESP32 development board and the ESP-IDF development framework installed on your machine. You can find instructions for installing ESP-IDF with PlatformIO [here](https://docs.platformio.org/en/latest/plus/debugging.html#advanced-configuration).
 
 Once you have ESP-IDF installed with PlatformIO, you can clone this repository and open it in Visual Studio Code with the PlatformIO extension. From there, you can build and flash the firmware to your ESP32 board using the PlatformIO toolbar.
